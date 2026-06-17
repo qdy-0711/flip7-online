@@ -5,7 +5,7 @@ import type { Flip7Card, Flip7Player, PublicFlip7Room } from "@board-games/share
 
 const socket = io() as any;
 const STORAGE_KEY = "flip7.identity";
-const APP_VERSION = "v0.3.0";
+const APP_VERSION = "v0.3.2";
 
 type Identity = {
   roomCode: string;

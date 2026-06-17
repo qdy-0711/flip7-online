@@ -157,11 +157,19 @@ function queueOrStartAction(room: Flip7Room, action: PendingAction): void {
 }
 
 function continuePendingActions(room: Flip7Room): boolean {
-  const next = room.pendingActionQueue.shift();
-  if (!next) return false;
-  room.pendingAction = next;
-  room.phase = "targeting";
-  return true;
+  while (room.pendingActionQueue.length > 0) {
+    const next = room.pendingActionQueue.shift();
+    if (!next) return false;
+    const hasValidTarget = next.action === "second_chance" || activeTargets(room).length > 0;
+    if (!hasValidTarget) {
+      room.roundLog.push(`${actionLabel(next.action)} 没有可选目标，已跳过`);
+      continue;
+    }
+    room.pendingAction = next;
+    room.phase = "targeting";
+    return true;
+  }
+  return false;
 }
 
 function resolveAction(room: Flip7Room, target: Flip7Player): void {
@@ -183,6 +191,7 @@ function resolveAction(room: Flip7Room, target: Flip7Player): void {
 
   if (pending.action === "flip_three") {
     room.roundLog.push(`${source?.nickname ?? "玩家"} 让 ${target.nickname} 连翻 3 张`);
+    const actionsDrawnDuringFlipThree: PendingAction[] = [];
     for (let index = 0; index < 3; index += 1) {
       const card = drawCard(room);
       if (card.type === "action") {
@@ -192,7 +201,7 @@ function resolveAction(room: Flip7Room, target: Flip7Player): void {
           room.roundLog.push(`${target.nickname} 获得 Second Chance`);
           continue;
         }
-        queueOrStartAction(room, { action: card.action, sourcePlayerId: source?.id ?? pending.sourcePlayerId });
+        actionsDrawnDuringFlipThree.push({ action: card.action, sourcePlayerId: target.id });
         continue;
       }
       if (target.status === "busted" && flip7Config.continueFlipThreeActionsAfterBust) {
@@ -205,8 +214,15 @@ function resolveAction(room: Flip7Room, target: Flip7Player): void {
         return;
       }
     }
+    if (actionsDrawnDuringFlipThree.length > 0) {
+      room.pendingActionQueue = [...actionsDrawnDuringFlipThree, ...room.pendingActionQueue];
+    }
   }
 
+  if (shouldEndRound(room)) {
+    finishRound(room);
+    return;
+  }
   if (continuePendingActions(room)) return;
   finishOrAdvance(room);
 }

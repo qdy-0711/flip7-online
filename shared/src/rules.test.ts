@@ -4,6 +4,7 @@ import {
   buildRoundSummary,
   createFlip7Deck,
   decideAiAction,
+  drawCard,
   finishRound,
   makePlayer,
   sanitizeState,
@@ -131,6 +132,16 @@ describe("Flip 7 rules", () => {
     const state = sanitizeState(room);
     expect(state.deckCount).toBe(3);
     expect("deck" in state).toBe(false);
+  });
+
+  it("starts a fresh deck instead of shuffling discards back in when the deck is empty", () => {
+    const room = roomWithPlayers();
+    room.deck = [];
+    room.discardPile = [numberCard(12, "discarded-12")];
+    const card = drawCard(room);
+    expect(card.id).not.toBe("discarded-12");
+    expect(room.discardPile).toHaveLength(0);
+    expect(room.deck).toHaveLength(93);
   });
 
   it("builds round summary with score details", () => {

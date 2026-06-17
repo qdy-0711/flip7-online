@@ -90,7 +90,7 @@ export function startRound(room: Flip7Room, config: Flip7Config = flip7Config, r
 
 export function drawCard(room: Flip7Room): Flip7Card {
   if (room.deck.length === 0) {
-    room.deck = shuffleDeck(room.discardPile);
+    room.deck = shuffleDeck(createFlip7Deck());
     room.discardPile = [];
   }
   const card = room.deck.shift();
