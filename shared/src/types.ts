@@ -18,6 +18,7 @@ export type Flip7Player = {
   status: Flip7PlayerStatus;
   numberCards: Flip7Card[];
   bonusCards: Flip7Card[];
+  bustedCards: Flip7Card[];
   secondChances: number;
   roundScore: number;
   totalScore: number;

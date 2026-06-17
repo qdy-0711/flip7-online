@@ -391,6 +391,7 @@ io.on("connection", (socket) => {
       player.status = "active";
       player.numberCards = [];
       player.bonusCards = [];
+      player.bustedCards = [];
       player.secondChances = 0;
       player.roundScore = 0;
     }

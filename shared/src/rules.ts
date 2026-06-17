@@ -59,6 +59,7 @@ export function makePlayer(id: string, nickname: string, seatIndex: number, isAI
     status: "active",
     numberCards: [],
     bonusCards: [],
+    bustedCards: [],
     secondChances: 0,
     roundScore: 0,
     totalScore: 0,
@@ -80,6 +81,7 @@ export function startRound(room: Flip7Room, config: Flip7Config = flip7Config, r
     player.status = "active";
     player.numberCards = [];
     player.bonusCards = [];
+    player.bustedCards = [];
     player.secondChances = 0;
     player.roundScore = 0;
     player.roundResult = "active";
@@ -124,6 +126,7 @@ export function applyCardToPlayer(room: Flip7Room, player: Flip7Player, card: Fl
     player.status = "busted";
     player.roundScore = 0;
     player.roundResult = "bust";
+    player.bustedCards.push(card);
     room.discardPile.push(card);
     room.roundLog.push(`${player.nickname} 翻出重复的 ${card.value}，爆牌`);
     return "bust";
@@ -208,7 +211,8 @@ export function sanitizeState(room: Flip7Room): PublicFlip7Room {
     players: room.players.map((player) => ({
       ...player,
       numberCards: [...player.numberCards],
-      bonusCards: [...player.bonusCards]
+      bonusCards: [...player.bonusCards],
+      bustedCards: [...player.bustedCards]
     })),
     discardPile: [...room.discardPile],
     pendingActionQueue: [...room.pendingActionQueue],

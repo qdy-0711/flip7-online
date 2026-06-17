@@ -5,6 +5,7 @@ import type { Flip7Card, Flip7Player, PublicFlip7Room } from "@board-games/share
 
 const socket = io() as any;
 const STORAGE_KEY = "flip7.identity";
+const APP_VERSION = "v0.3.0";
 
 type Identity = {
   roomCode: string;
@@ -155,6 +156,7 @@ function App() {
       <header className="topbar">
         <div className="brand">
           <strong>Flip 7</strong>
+          <span className="version-chip">{APP_VERSION}</span>
           {room && <span className="room-chip">房间码：{room.code}</span>}
         </div>
         <div className="header-actions">
@@ -440,19 +442,21 @@ function PlayerCard({ player, isCurrent, isMe }: { player: Flip7Player; isCurren
         <div className="player-card-row">
           {player.numberCards.map((card) => <CardFace card={card} key={card.id} compact={isCurrent} mini={!isCurrent} />)}
           {player.bonusCards.map((card) => <CardFace card={card} key={card.id} mini />)}
-          {player.numberCards.length + player.bonusCards.length === 0 && <em>尚未翻牌</em>}
+          {player.bustedCards.map((card) => <CardFace card={card} key={card.id} mini busted />)}
+          {player.numberCards.length + player.bonusCards.length + player.bustedCards.length === 0 && <em>尚未翻牌</em>}
         </div>
       </div>
     </article>
   );
 }
 
-function CardFace({ card, large = false, medium = false, compact = false, mini = false, display = false, fanIndex }: { card: Flip7Card; large?: boolean; medium?: boolean; compact?: boolean; mini?: boolean; display?: boolean; fanIndex?: number }) {
+function CardFace({ card, large = false, medium = false, compact = false, mini = false, display = false, busted = false, fanIndex }: { card: Flip7Card; large?: boolean; medium?: boolean; compact?: boolean; mini?: boolean; display?: boolean; busted?: boolean; fanIndex?: number }) {
   const sizeClass = display ? "display-card" : large ? "large-card" : medium ? "medium-card" : compact ? "compact-card" : mini ? "mini-card" : "";
+  const stateClass = busted ? "busted-face" : "";
   const fanStyle = fanIndex === undefined ? undefined : { "--fan-index": fanIndex } as React.CSSProperties;
   if (card.type === "number") {
     return (
-      <div className={`${cardClass(card)} ${sizeClass} ${fanIndex !== undefined ? "fan-card" : ""}`} style={fanStyle}>
+      <div className={`${cardClass(card)} ${sizeClass} ${stateClass} ${fanIndex !== undefined ? "fan-card" : ""}`} style={fanStyle}>
         <strong>{card.value}</strong>
         <span className="number-icon">{numberIcon(card.value)}</span>
       </div>

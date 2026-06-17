@@ -48,6 +48,7 @@ describe("Flip 7 rules", () => {
     applyCardToPlayer(room, player, numberCard(8, "b"));
     expect(player.status).toBe("busted");
     expect(player.roundScore).toBe(0);
+    expect(player.bustedCards.map((card) => (card.type === "number" ? card.value : -1))).toEqual([8]);
   });
 
   it("uses and consumes Second Chance instead of busting", () => {

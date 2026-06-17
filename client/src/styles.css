@@ -137,6 +137,16 @@ input:focus {
   font-weight: 800;
 }
 
+.version-chip {
+  padding: 4px 9px;
+  border: 1px solid rgba(20, 43, 77, .16);
+  border-radius: 999px;
+  background: #fffefa;
+  color: #5d6c84;
+  font-size: 12px;
+  font-weight: 900;
+}
+
 .header-actions {
   display: flex;
   align-items: center;
@@ -510,10 +520,12 @@ input:focus {
 
 .player-card-row {
   display: flex;
+  flex-wrap: wrap;
   gap: 5px;
   min-height: 48px;
+  max-height: 104px;
   align-items: center;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .player-card-row em,
@@ -969,13 +981,13 @@ input:focus {
 }
 
 .mini-card {
-  width: 34px;
-  height: 48px;
+  width: 31px;
+  height: 44px;
   border-radius: 7px;
 }
 
 .mini-card strong {
-  font-size: 20px;
+  font-size: 19px;
 }
 
 .mini-card .card-corner,
@@ -988,6 +1000,33 @@ input:focus {
   width: 58px;
   height: 82px;
   border-radius: 11px;
+}
+
+.busted-face {
+  color: var(--coral);
+  border-style: dashed;
+  background:
+    linear-gradient(135deg, rgba(255, 107, 107, .10), rgba(255, 255, 255, .86)),
+    linear-gradient(135deg, #fffdf7, #f6f2e9);
+  opacity: .95;
+}
+
+.busted-face::before {
+  content: "爆";
+  position: absolute;
+  z-index: 3;
+  top: -8px;
+  right: -8px;
+  display: grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 999px;
+  background: var(--coral);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 900;
+  box-shadow: 0 3px 8px rgba(255, 107, 107, .24);
 }
 
 .medium-card strong {
